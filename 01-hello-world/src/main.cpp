@@ -3,25 +3,28 @@
 
 #include <glad/gl.h>
 
-#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <optional>
 
 const float verticies[] = {
-    .5f,  -.5f, 0.0f, // Bottom right
-    0.0f, .5f,  0.0f, // Top
-    -.5f, -.5f, 0.0f, // Bottom left
+    .5f,  -.5f, 0.0f, 1.f, 0.f, 0.f, // Bottom right
+    0.0f, .5f,  0.0f, 0.f, 1.f, 0.f, // Top
+    -.5f, -.5f, 0.0f, 0.f, 0.f, 1.f  // Bottom left
 };
 
 static const char *vertex_shader_src = "#version 330 core\n"
                                        "layout(location=0) in vec3 pos;\n"
+                                       "layout(location=1) in vec3 color;\n"
+                                       "out vec3 vColor;\n"
                                        "void main(){\n"
-                                       " gl_Position = vec4(pos, 1.0);\n"
+                                       "  gl_Position = vec4(pos, 1.0);\n"
+                                       "  vColor = color;\n"
                                        "}\n";
 static const char *frag_shader_src = "#version 330 core\n"
-                                     "out vec4 color;\n"
+                                     "layout(location=0) out vec4 color;\n"
+                                     "in vec3 vColor;\n"
                                      "void main(){\n"
-                                     " color = vec4(1.0, 0.04, 0.03, 1.0);\n"
+                                     "  color = vec4(vColor, 1.0);\n"
                                      "}\n";
 
 void error_callback(int error, const char *descriptor) {
@@ -144,7 +147,11 @@ int main() {
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6,
+                        (GLvoid *)0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6,
+                        (GLvoid *)(sizeof(float) * 3));
 
   double last_time = glfwGetTime();
   while (!glfwWindowShouldClose(window)) {
