@@ -1,0 +1,3 @@
+[submodule "01-hello-world/external_libs/glm"]
+	path = 01-hello-world/external_libs/glm
+	url = https://github.com/g-truc/glm.git

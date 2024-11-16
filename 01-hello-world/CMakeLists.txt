@@ -9,9 +9,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(external_libs/glad)
 add_subdirectory(external_libs/glfw)
+add_subdirectory(external_libs/glm)
 
 file(GLOB SRC_FILES src/*.cpp src/*.h src/*.hpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm)
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE $<$<CONFIG:Debug>:DEBUG>
+)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
