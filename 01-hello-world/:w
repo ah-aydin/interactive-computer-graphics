@@ -273,16 +273,17 @@ int main() {
     GL_CALL(glClearColor(r / 255.f, g / 255.f, b / 255.f, 1));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-    yaw += (30 * delta) * yaw_dir;
+    yaw += (40 * delta) * yaw_dir;
     pitch += (40 * delta) * pitch_dir;
-    roll += (50 * delta) * roll_dir;
-    if (yaw > 360 * 20 || yaw < 0) {
+    roll += (40 * delta) * roll_dir;
+    std::cout << yaw << std::endl;
+    if (yaw > 360 || yaw < 0) {
       yaw_dir *= -1;
     }
-    if (pitch > 360 * 20 || pitch < 0) {
+    if (pitch > 360 || pitch < 0) {
       pitch_dir *= -1;
     }
-    if (roll > 360 * 20 || roll < 0) {
+    if (roll > 360 || roll < 0) {
       roll_dir *= -1;
     }
 
