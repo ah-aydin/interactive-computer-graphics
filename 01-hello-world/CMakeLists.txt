@@ -7,9 +7,18 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory(external_libs/glad)
-add_subdirectory(external_libs/glfw)
-add_subdirectory(external_libs/glm)
+add_subdirectory(
+  ${EXTERNAL_LIBS_DIR}/glad
+  ${CMAKE_BINARY_DIR}/external/glad
+)
+add_subdirectory(
+  ${EXTERNAL_LIBS_DIR}/glfw
+  ${CMAKE_BINARY_DIR}/external/glfw
+)
+add_subdirectory(
+  ${EXTERNAL_LIBS_DIR}/glm
+  ${CMAKE_BINARY_DIR}/external/glm
+)
 
 file(GLOB SRC_FILES src/*.cpp src/*.h src/*.hpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
