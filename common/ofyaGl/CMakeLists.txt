@@ -8,12 +8,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB SRC_FILES src/*.cpp src/*.h src/*.hpp)
 
-add_library(ofyaGl STATIC ${SRC_FILES})
+add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
-target_link_libraries(ofyaGl PUBLIC glad glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glm)
 
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE $<$<CONFIG:Debug>:DEBUG>
 )
 
-target_include_directories(ofyaGl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

@@ -12,3 +12,4 @@ add_subdirectory(${EXTERNAL_LIBS_DIR}/glfw)
 add_subdirectory(${EXTERNAL_LIBS_DIR}/glm)
 
 add_subdirectory(01-hello-world)
+add_subdirectory(02-obj-loading)

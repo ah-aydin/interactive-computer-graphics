@@ -1,5 +1,7 @@
 # Run instructions
 ```bash
+source ./setup_env.sh
+
 mkdir build
 cd build
 
