@@ -1,4 +1,6 @@
 #include "glm/ext/matrix_float3x3.hpp"
+#include "glm/ext/quaternion_geometric.hpp"
+#include "glm/geometric.hpp"
 #include <glad/gl.h>
 
 #include <GLFW/glfw3.h>
@@ -78,9 +80,12 @@ int main(int argc, char *argv[]) {
                        sizeof(unsigned int) * objData->indicies.size(),
                        indicies, GL_STATIC_DRAW));
 
-  glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), // Camera position
-                               glm::vec3(0.0f, 0.0f, 0.0f), // Target
-                               glm::vec3(0.0f, 1.0f, 0.0f)  // Up vector
+  glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+  glm::vec3 lookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 cameraForwardVec = glm::normalize(lookAt - cameraPos);
+  glm::mat4 view = glm::lookAt(cameraPos,                  // Camera position
+                               lookAt,                     // Target
+                               glm::vec3(0.0f, 1.0f, 0.0f) // Up vector
   );
   glm::mat4 projection =
       glm::perspective(glm::radians(90.f), 800.f / 680.f, 0.1f, 500.f);
@@ -92,6 +97,9 @@ int main(int argc, char *argv[]) {
   float yaw = 0.f, pitch = 0.f, roll = 0.f;
   int yaw_dir = 1, pitch_dir = 1, roll_dir = 1;
 
+  shader.use();
+  shader.setUniform("light_dir", glm::normalize(glm::vec3(.5f, -.6f, -.3f)));
+  shader.setUniform("camera_forward_dir", glm::normalize(cameraForwardVec));
   double last_time = glfwGetTime();
   while (!window.shouldClose()) {
     double time = glfwGetTime();
