@@ -1,7 +1,22 @@
 #include <ofyaGl/shader.h>
 
+#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <optional>
+#include <sstream>
+
+std::optional<std::string> readShaderFromFile(const char *filePath) {
+  std::cout << "Reading shader file: " << filePath << std::endl;
+  std::ifstream file(filePath);
+  if (!file.is_open()) {
+    std::cerr << "Failed to open shader file: " << filePath << std::endl;
+    return {};
+  }
+  std::stringstream srcStream;
+  srcStream << file.rdbuf();
+  return srcStream.str();
+}
 
 namespace ofyaGl {
 
@@ -48,6 +63,21 @@ Shader Shader::fromSrc(const char *vertSrc, const char *fragSrc) {
   }
 
   return Shader(program);
+}
+
+Shader Shader::fromFile(const char *vertFile, const char *fragFile) {
+  std::string shaderDir = std::getenv("ICG_SHADER_DIR");
+
+  std::string vertFilePath = shaderDir + "/" + vertFile;
+  std::string fragFilePath = shaderDir + "/" + fragFile;
+
+  std::optional<std::string> vertSrc = readShaderFromFile(vertFilePath.c_str());
+  std::optional<std::string> fragSrc = readShaderFromFile(fragFilePath.c_str());
+  if (!vertSrc.has_value() || !fragSrc.has_value()) {
+    return Shader(0);
+  }
+
+  return Shader::fromSrc(vertSrc->c_str(), fragSrc->c_str());
 }
 
 GLuint Shader::getUniformPosition(const char *uniformName) {

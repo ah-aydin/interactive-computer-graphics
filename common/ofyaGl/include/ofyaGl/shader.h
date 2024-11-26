@@ -27,7 +27,12 @@ public:
   /**
    * Check `Shader::isValid` afterwards.
    */
-  static Shader fromSrc(const char *vertSource, const char *fragSource);
+  static Shader fromSrc(const char *vertSrc, const char *fragSrc);
+
+  /**
+   * Check `Shader::isValid` afterwards.
+   */
+  static Shader fromFile(const char *vertFile, const char *fragFile);
 
   inline void use() { GL_CALL(glUseProgram(programId)) }
   inline void stop_use() { GL_CALL(glUseProgram(0)); }
