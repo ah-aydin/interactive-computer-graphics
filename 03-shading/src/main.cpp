@@ -1,3 +1,4 @@
+#include "glm/ext/matrix_float3x3.hpp"
 #include <glad/gl.h>
 
 #include <GLFW/glfw3.h>
@@ -28,7 +29,7 @@ int main(int argc, char *argv[]) {
   GL_CALL(glEnable(GL_DEPTH_TEST));
   GL_CALL(glFrontFace(GL_CCW));
 
-  ofyaGl::Shader shader = ofyaGl::Shader::fromFile("02.vert", "02.frag");
+  ofyaGl::Shader shader = ofyaGl::Shader::fromFile("03.vert", "03.frag");
   if (!shader.isValid()) {
     window.terminate();
     return EXIT_FAILURE;
@@ -85,8 +86,8 @@ int main(int argc, char *argv[]) {
       glm::perspective(glm::radians(90.f), 800.f / 680.f, 0.1f, 500.f);
 
   glm::mat4 base_model = glm::mat4(1.0f);
+  base_model = glm::translate(base_model, glm::vec3(0.f, 0.f, -2.f));
   base_model = glm::scale(base_model, glm::vec3(.1f, .1f, .1f));
-  base_model = glm::translate(base_model, glm::vec3(0.f, 0.f, -15.f));
 
   float yaw = 0.f, pitch = 0.f, roll = 0.f;
   int yaw_dir = 1, pitch_dir = 1, roll_dir = 1;
@@ -115,10 +116,14 @@ int main(int argc, char *argv[]) {
         glm::rotate(base_model, glm::radians(yaw), glm::vec3(0.f, 1.f, 0.f));
     model = glm::rotate(model, glm::radians(pitch), glm::vec3(1.f, 0.f, 0.f));
     model = glm::rotate(model, glm::radians(roll), glm::vec3(0.f, 0.f, 1.f));
-    glm::mat4 mvp = projection * view * model;
+    glm::mat4 mv = view * model; // Model View
+    glm::mat3 mv_n =
+        glm::transpose(glm::inverse(glm::mat3(mv))); // Model View for normal
+    glm::mat4 mvp = projection * mv;                 // Modal View Projection
 
     shader.use();
     shader.setUniform("mvp", mvp);
+    shader.setUniform("mv_n", mv_n);
 
     // TODO draw model
     glBindVertexArray(vao);

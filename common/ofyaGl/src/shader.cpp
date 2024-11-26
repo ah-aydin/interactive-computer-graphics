@@ -103,4 +103,16 @@ void Shader::setUniform(const char *uniformName, const glm::mat4 mat4) {
       glUniformMatrix4fv(uniformPosition, 1, GL_FALSE, glm::value_ptr(mat4)));
 }
 
+void Shader::setUniform(const GLuint uniformPosition,
+                        const glm::mat3 mat3) const {
+  GL_CALL(
+      glUniformMatrix3fv(uniformPosition, 1, GL_FALSE, glm::value_ptr(mat3)));
+}
+
+void Shader::setUniform(const char *uniformName, const glm::mat3 mat3) {
+  GLuint uniformPosition = getUniformPosition(uniformName);
+  GL_CALL(
+      glUniformMatrix3fv(uniformPosition, 1, GL_FALSE, glm::value_ptr(mat3)));
+}
+
 } // namespace ofyaGl

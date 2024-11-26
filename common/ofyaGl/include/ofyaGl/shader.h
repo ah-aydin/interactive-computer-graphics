@@ -40,6 +40,8 @@ public:
   GLuint getUniformPosition(const char *uniformName);
   void setUniform(const GLuint uniformPosition, const glm::mat4 mat4) const;
   void setUniform(const char *uniformName, const glm::mat4 mat4);
+  void setUniform(const GLuint uniformPosition, const glm::mat3 mat3) const;
+  void setUniform(const char *uniformName, const glm::mat3 mat3);
 
   inline bool isValid() { return programId != 0; }
 };
