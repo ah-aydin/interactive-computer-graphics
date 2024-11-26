@@ -10,7 +10,7 @@ file(GLOB SRC_FILES src/*.cpp src/*.h src/*.hpp)
 
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glad glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw glm)
 
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE $<$<CONFIG:Debug>:DEBUG>

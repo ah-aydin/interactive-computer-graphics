@@ -13,23 +13,7 @@
 #include <ofyaGl/gl.h>
 #include <ofyaGl/obj.h>
 #include <ofyaGl/shader.h>
-
-void error_callback(int error, const char *descriptor) {
-  std::cerr << "Error: " << descriptor << std::endl;
-}
-
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mods) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-  }
-}
-
-void size_callback(GLFWwindow *window, int w, int h) {
-  int width, height;
-  glfwGetFramebufferSize(window, &width, &height);
-  GL_CALL(glViewport(0, 0, width, height));
-}
+#include <ofyaGl/window.h>
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -37,50 +21,16 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-#ifdef DEBUG
-  std::cout << "Running in DEBUG mode\n";
-#endif
-  if (!glfwInit()) {
-    std::cerr << "Failed to initialze GLFW\n";
-    return EXIT_FAILURE;
-  }
+  ofyaGl::Window window(640, 480, "03 Shading");
 
-  glfwSetErrorCallback(error_callback);
-
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  GLFWwindow *window = glfwCreateWindow(640, 480, "03 Shading", NULL, NULL);
-  if (!window) {
-    glfwTerminate();
-    std::cerr << "Failed to create GLFWwindow\n";
-    return EXIT_FAILURE;
-  }
-  glfwSetKeyCallback(window, key_callback);
-  glfwSetWindowSizeCallback(window, size_callback);
-
-  glfwMakeContextCurrent(window);
-  int version = gladLoadGL(glfwGetProcAddress);
-  if (version == 0) {
-    std::cerr << "Failed to initialize OpenGL context\n";
-    return EXIT_FAILURE;
-  }
-
-  int width, height;
-  glfwGetFramebufferSize(window, &width, &height);
-  GL_CALL(glViewport(0, 0, width, height));
   GL_CALL(glClearColor(0.2, 0.2, 0.2, 0.2));
 
   GL_CALL(glEnable(GL_DEPTH_TEST));
   GL_CALL(glFrontFace(GL_CCW));
 
-  std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "."
-            << GLAD_VERSION_MINOR(version) << std::endl;
-
   ofyaGl::Shader shader = ofyaGl::Shader::fromFile("02.vert", "02.frag");
   if (!shader.isValid()) {
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    window.terminate();
     return EXIT_FAILURE;
   }
 
@@ -88,8 +38,7 @@ int main(int argc, char *argv[]) {
   auto objData = ofyaGl::loadObjDataFromFile(argv[1]);
   if (!objData.has_value()) {
     std::cerr << "Failed to load object data\n";
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    window.terminate();
     return EXIT_FAILURE;
   }
 
@@ -143,7 +92,7 @@ int main(int argc, char *argv[]) {
   int yaw_dir = 1, pitch_dir = 1, roll_dir = 1;
 
   double last_time = glfwGetTime();
-  while (!glfwWindowShouldClose(window)) {
+  while (!window.shouldClose()) {
     double time = glfwGetTime();
     double delta = time - last_time;
 
@@ -175,14 +124,13 @@ int main(int argc, char *argv[]) {
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+    window.swapBuffers();
+    window.pollEvents();
 
     last_time = time;
   }
 
-  glfwDestroyWindow(window);
-  glfwTerminate();
+  window.terminate();
 
   return EXIT_SUCCESS;
 }
